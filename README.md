@@ -77,24 +77,29 @@ On how to set up the microphone and what pits to avoid, I recommend this project
 - A USB microphone for online meetings | Andys Workshop (andybrown.me.uk)
 
 And for playing back a wav file, this one:
-WAVEPLAYER using STM32 || I2S AUDIO || CS43L22 || F4 DISCOVERY (youtube.com)
+- WAVEPLAYER using STM32 || I2S AUDIO || CS43L22 || F4 DISCOVERY (youtube.com)
 
 ## To read
 There is a lot of reading involved for this project due to all the new elements we will be using.
 
 For the I2S specs, I recommend looking at this:
-I2S bus specification (nxp.com)
+- I2S bus specification (nxp.com)
+
 I also suggest going through a general description on how to construct a wav file: 
-https://learn.microsoft.com/en-gb/archive/blogs/dawate/intro-to-audio-programming-part-2-demystifying-the-wav-format
+- https://learn.microsoft.com/en-gb/archive/blogs/dawate/intro-to-audio-programming-part-2-demystifying-the-wav-format
+
 Some sample files can be found here for testing purposes:
-https://samplelib.com/sample-wav.html
+- https://samplelib.com/sample-wav.html
+
 Audacity is a free tool to look at audio files and format them to the desired output:
-https://learn.adafruit.com/microcontroller-compatible-audio-file-conversion/check-your-files
+- https://learn.adafruit.com/microcontroller-compatible-audio-file-conversion/check-your-files
+
 As usual, the available Adafruit information on both the mic and the Music Maker is golden (datasheets for all ICs can be found here as well):
-Overview | Adafruit I2S MEMS Microphone Breakout | Adafruit Learning System
-Overview | Adafruit Music Maker FeatherWing | Adafruit Learning System
+- Overview | Adafruit I2S MEMS Microphone Breakout | Adafruit Learning System
+- Overview | Adafruit Music Maker FeatherWing | Adafruit Learning System
+
 Lastly, validating the file we generate using a hex reader:
-HexEd.it - Browser-based Online and Offline Hex Editing
+- HexEd.it - Browser-based Online and Offline Hex Editing
 
 ## Particularities
 ### SDcard
@@ -120,18 +125,19 @@ I have found the wav file specifications to be somewhat confusing since the nami
 
 Let’s look at the header.
 
-We have “RIFF”, “WAVE”, “fmt “ and “data” elements which are always the same and are always at the same place within the header, so they don’t need any explanation.
+- We have “RIFF”, “WAVE”, “fmt “ and “data” elements which are always the same and are always at the same place within the header, so they don’t need any explanation.
 
-“FileLength” and the “Datachunksize” section can be left as “0xFFFFFFFF” if we are lazy. The codec would not mind, but a PC might if you intend to extract the wav files afterwards from the SDcard. Anyway, these values should be exactly the number of data bytes we have captured for “datachunksize” and “datachunkzise + 44 bytes (header size)” for the “FileLength”. It is obviously possible to edit the file afterward the data has been captured to implement the exact file size values, though I have omitted that here.
-“fmtchunksize” is 0x10000000, which – due to the endian swap - will represent an “fmtchunksize” of 16 bits. We can ignore this, I think it is a constant since it seems to describe the package sizes the decoder should read from the file when it is going through the header.
+- “FileLength” and the “Datachunksize” section can be left as “0xFFFFFFFF” if we are lazy. The codec would not mind, but a PC might if you intend to extract the wav files afterwards from the SDcard. Anyway, these values should be exactly the number of data bytes we have captured for “datachunksize” and “datachunkzise + 44 bytes (header size)” for the “FileLength”. It is obviously possible to edit the file afterward the data has been captured to implement the exact file size values, though I have omitted that here.
 
-“FormatTag” and “channelnumber” sections should be self-explanatory. PCM format will be 0x0100 and mono channel will be 0x0100 (both values being “1”, just endian swapped).
+- “fmtchunksize” is 0x10000000, which – due to the endian swap - will represent an “fmtchunksize” of 16 bits. We can ignore this, I think it is a constant since it seems to describe the package sizes the decoder should read from the file when it is going through the header.
 
-“Samplingrate” should be the sampling rate, while “byterate” should be the frequency at which one byte is to be transferred/recorded. For example, if we have 16-bit PCM data at 22050 Hz, then one byte will have to be transferred at twice that speed (44100 Hz) to sustain the constant sampling rate of 22050 Hz.
+- “FormatTag” and “channelnumber” sections should be self-explanatory. PCM format will be 0x0100 and mono channel will be 0x0100 (both values being “1”, just endian swapped).
 
-“Blockalign” describes how many bytes we have in the channel. In case of 16-bit PCM, this will be 2 (0x0200).
+- “Samplingrate” should be the sampling rate, while “byterate” should be the frequency at which one byte is to be transferred/recorded. For example, if we have 16-bit PCM data at 22050 Hz, then one byte will have to be transferred at twice that speed (44100 Hz) to sustain the constant sampling rate of 22050 Hz.
 
-“Bitspersample” will be 0x1000 (or 16) for PCM 16-bit.
+- “Blockalign” describes how many bytes we have in the channel. In case of 16-bit PCM, this will be 2 (0x0200).
+
+- “Bitspersample” will be 0x1000 (or 16) for PCM 16-bit.
 
 And that’s pretty much it. Now, please be aware that the example above is for a 16-bit mono audio file which is arguably rather simple. When we have more bits, the “byterate” as well as the “bitspersample” will need to be adjusted accordingly. This can become especially complicated when we are to transfer 32 bits in a channel but with only 24 bits of audio data stored in each package. To be honest, I recommend generating the desired wav output type using Audacity and then copying the hex values from that file’s header to avoid any mistakes. If the wav file is not set up correctly, the output will be very dodgy in quality or would not be there at all when being read out with the codec.
 
