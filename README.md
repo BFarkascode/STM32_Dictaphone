@@ -83,23 +83,22 @@ And for playing back a wav file, this one:
 There is a lot of reading involved for this project due to all the new elements we will be using.
 
 For the I2S specs, I recommend looking at this:
-- I2S bus specification (nxp.com)
+- https://www.nxp.com/docs/en/user-manual/UM11732.pdf
 
-I also suggest going through a general description on how to construct a wav file: 
+I also suggest going through a general description on how to construct a wav file, with some sample files in the second link and the "Audacity" tool in the third one): 
 - https://learn.microsoft.com/en-gb/archive/blogs/dawate/intro-to-audio-programming-part-2-demystifying-the-wav-format
-
-Some sample files can be found here for testing purposes:
 - https://samplelib.com/sample-wav.html
-
-Audacity is a free tool to look at audio files and format them to the desired output:
 - https://learn.adafruit.com/microcontroller-compatible-audio-file-conversion/check-your-files
 
 As usual, the available Adafruit information on both the mic and the Music Maker is golden (datasheets for all ICs can be found here as well):
-- Overview | Adafruit I2S MEMS Microphone Breakout | Adafruit Learning System
-- Overview | Adafruit Music Maker FeatherWing | Adafruit Learning System
+- https://learn.adafruit.com/adafruit-i2s-mems-microphone-breakout/overview
+- https://learn.adafruit.com/adafruit-music-maker-featherwing/overview
 
-Lastly, validating the file we generate using a hex reader:
-- HexEd.it - Browser-based Online and Offline Hex Editing
+We should validate the file we generate using a hex reader:
+- www.HexEd.it
+
+Lastly, just as a cherry on top for the audio connoisseurs, I have found the following videos on youtube to be very informative on digital signal processing (sound filtering, quality improvement, removal of "clicking" and so on):
+- https://www.youtube.com/watch?v=yGeXEwdNd_s&list=PL_QS1A2ZqaG7p50cd0AgLeG9Q3TN64vZJ&index=1
 
 ## Particularities
 ### SDcard
